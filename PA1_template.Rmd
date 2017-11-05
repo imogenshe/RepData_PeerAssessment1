@@ -30,17 +30,16 @@ Change the data frame to the dyplr form for easier manipulation. And plot the hi
 ```{r}
 library(dplyr)
 act <- tbl_df(activity)
-group_by(act, date) %>%
-        summarise(Daysum=sum(steps)) %>%
-                          plot(type="h",main="Total number of steps taken each day", xlab="Number of steps",ylab="Date") 
+k1<-group_by(act, date)
+k2<-summarise(k1,Daysum=sum(steps))
+hist(k2$Daysum,main="Total number of steps taken each day", xlab="Number of steps") 
 ```  
 
 ## What is mean total number of steps taken per day?  
 Calculate the mean and median total number of steps taken per day.  
 ```{r}
-group_by(act,date) %>%
-        summarise(mean=
-                mean(steps),median=median(steps))
+mean(k2$Daysum,na.rm = TRUE)
+median(k2$Daysum, na.rm = TRUE)
 ```
 
 ## What is the average daily activity pattern?   
@@ -77,22 +76,20 @@ act_rmna
 ```
 We can see that all the NA's are now filled.  
 
-Next, plot the gistogram of the total number of steps taken each day after NAs imputed.  
+Next, plot the histogram of the total number of steps taken each day after NAs imputed.  
 
 ```{r}
 a1<- group_by(act_rmna,date)
-b1<- summarise(a1,mean=mean(steps,na.rm = T))
-plot(b1, main = "Average number of steps taken per day with NAs imputed",ylab="Average daily steps", xlab="Date", type = "h")
+b1<- summarise(a1,sum=sum(steps))
+hist(b1$sum, main = "Average number of steps taken per day with NAs imputed",xlab="Number of steps")
 ```  
 
 Meand and median number of steps taken each day
 sum over day
 ```{R}
-#Interval with maximum average daily steps
-filter(b1, mean==max(mean))
+mean(b1$sum)
+median(b1$sum)
 
-#Interval with meddian average daily steps
-filter(b1,mean==median(mean))
 ```  
 
 ## Are there differences in activity patterns between weekdays and weekends?  

@@ -52,37 +52,30 @@ Change the data frame to the dyplr form for easier manipulation. And plot the hi
 ```r
 library(dplyr)
 act <- tbl_df(activity)
-group_by(act, date) %>%
-        summarise(Daysum=sum(steps)) %>%
-                          plot(type="h",main="Total number of steps taken each day", xlab="Number of steps",ylab="Date") 
+k1<-group_by(act, date)
+k2<-summarise(k1,Daysum=sum(steps))
+hist(k2$Daysum,main="Total number of steps taken each day", xlab="Number of steps") 
 ```
 
-![plot of chunk unnamed-chunk-1](figure/unnamed-chunk-1-1.png)
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
 
 ## What is mean total number of steps taken per day?  
 Calculate the mean and median total number of steps taken per day.  
 
 ```r
-group_by(act,date) %>%
-        summarise(mean=
-                mean(steps),median=median(steps))
+mean(k2$Daysum,na.rm = TRUE)
 ```
 
 ```
-## # A tibble: 61 x 3
-##          date     mean median
-##        <date>    <dbl>  <dbl>
-##  1 2012-10-01       NA     NA
-##  2 2012-10-02  0.43750      0
-##  3 2012-10-03 39.41667      0
-##  4 2012-10-04 42.06944      0
-##  5 2012-10-05 46.15972      0
-##  6 2012-10-06 53.54167      0
-##  7 2012-10-07 38.24653      0
-##  8 2012-10-08       NA     NA
-##  9 2012-10-09 44.48264      0
-## 10 2012-10-10 34.37500      0
-## # ... with 51 more rows
+## [1] 10766.19
+```
+
+```r
+median(k2$Daysum, na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 ## What is the average daily activity pattern?   
@@ -95,7 +88,7 @@ b<- summarise(a,mean=mean(steps,na.rm = TRUE))
 plot(b,ylab="Average daily steps", xlab="Interval (minutes)",main = "Average number of steps taken per day in intervals", type = "l")
 ```
 
-![plot of chunk unnamed-chunk-3](figure/unnamed-chunk-3-1.png)
+![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
 
 Calculate the 5-minute interval that, on average, contains the maximum number of steps.  
 
@@ -155,49 +148,34 @@ act_rmna
 ```
 We can see that all the NA's are now filled.  
 
-Next, plot the gistogram of the total number of steps taken each day after NAs imputed.  
+Next, plot the histogram of the total number of steps taken each day after NAs imputed.  
 
 
 ```r
 a1<- group_by(act_rmna,date)
-b1<- summarise(a1,mean=mean(steps,na.rm = T))
-plot(b1, main = "Average number of steps taken per day with NAs imputed",ylab="Average daily steps", xlab="Date", type = "h")
+b1<- summarise(a1,sum=sum(steps))
+hist(b1$sum, main = "Average number of steps taken per day with NAs imputed",xlab="Number of steps")
 ```
 
-![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png)
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png)
 
 Meand and median number of steps taken each day
 sum over day
 
 ```r
-#Interval with maximum average daily steps
-filter(b1, mean==max(mean))
+mean(b1$sum)
 ```
 
 ```
-## # A tibble: 1 x 2
-##         date     mean
-##       <date>    <dbl>
-## 1 2012-11-23 73.59028
+## [1] 10766.19
 ```
 
 ```r
-#Interval with meddian average daily steps
-filter(b1,mean==median(mean))
+median(b1$sum)
 ```
 
 ```
-## # A tibble: 8 x 2
-##         date    mean
-##       <date>   <dbl>
-## 1 2012-10-01 37.3826
-## 2 2012-10-08 37.3826
-## 3 2012-11-01 37.3826
-## 4 2012-11-04 37.3826
-## 5 2012-11-09 37.3826
-## 6 2012-11-10 37.3826
-## 7 2012-11-14 37.3826
-## 8 2012-11-30 37.3826
+## [1] 10766.19
 ```
 
 ## Are there differences in activity patterns between weekdays and weekends?  
@@ -229,7 +207,7 @@ p = ggplot(b2, aes(x=interval,y=mean)) +geom_line()
 p + facet_grid(week ~ .)+ylab("Average number of steps")+ggtitle("Average number of steps taken in intervals during weekdays and weekends")
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png)
+![plot of chunk unnamed-chunk-13](figure/unnamed-chunk-13-1.png)
   
   From the plots, we can see that on weekdays, the number of steps peaks around the interval 800 and dropped immediately to a low level. It fluctuated for the rest of the day.  
   However, during weekends, the number of steps also peaked at the same time, but it flunctuated at the same level for the rest of the day, with a graduate decrease from the interval 1600.
