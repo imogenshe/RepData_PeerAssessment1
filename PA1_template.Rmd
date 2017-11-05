@@ -32,7 +32,7 @@ library(dplyr)
 act <- tbl_df(activity)
 group_by(act, date) %>%
         summarise(Daysum=sum(steps)) %>%
-                          plot(type="h") 
+                          plot(type="h",main="Total number of steps taken each day", xlab="Number of steps",ylab="Date") 
 ```  
 
 ## What is mean total number of steps taken per day?  
@@ -49,7 +49,7 @@ Plot a time series of the average number of steps taken
 ```{r}
 a<- group_by(act,interval)
 b<- summarise(a,mean=mean(steps,na.rm = TRUE))
-plot(b,ylab="Average daily steps", xlab="Interval (minutes)", type = "l")
+plot(b,ylab="Average daily steps", xlab="Interval (minutes)",main = "Average number of steps taken per day in intervals", type = "l")
 ```
 
 Calculate the 5-minute interval that, on average, contains the maximum number of steps.  
@@ -82,7 +82,7 @@ Next, plot the gistogram of the total number of steps taken each day after NAs i
 ```{r}
 a1<- group_by(act_rmna,date)
 b1<- summarise(a1,mean=mean(steps,na.rm = T))
-plot(b1,ylab="Average daily steps", xlab="Date", type = "h")
+plot(b1, main = "Average number of steps taken per day with NAs imputed",ylab="Average daily steps", xlab="Date", type = "h")
 ```  
 
 Meand and median number of steps taken each day
@@ -120,7 +120,7 @@ b2<- summarise(act1,mean=mean(steps))
 
 #Make plots for weekdays and weekends
 p = ggplot(b2, aes(x=interval,y=mean)) +geom_line()
-p + facet_grid(week ~ .)+ylab("Average number of steps")
+p + facet_grid(week ~ .)+ylab("Average number of steps")+ggtitle("Average number of steps taken in intervals during weekdays and weekends")
 ```             
   
   From the plots, we can see that on weekdays, the number of steps peaks around the interval 800 and dropped immediately to a low level. It fluctuated for the rest of the day.  
